@@ -1,0 +1,823 @@
+//
+// index.html
+//
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NowTask</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
+
+//
+// package.json
+//
+{
+  "name": "nowtask3",
+  "version": "0.9.6",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.12",
+    "@vitejs/plugin-react": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.0.0"
+  }
+}
+
+//
+// README.md
+//
+# NowTask - v0.9.6
+
+「今日一日を、直感的に。」
+
+NowTaskは、個人が今日一日のタスクを単一のタイムライン上で直感的に管理できるWebアプリケーションです。
+
+---
+
+## 主な機能
+- **日付選択**:特定の日付のタスクを管理できます。
+- **タスクの追加**: 開始・終了日時を指定してタスクを追加できます。
+- **インライン編集**: タスクカード内で直接、名称・日時・時刻を編集できます。
+- **ドラッグ＆リサイズ**: タスクをドラッグして時間移動、上下に伸縮して所要時間を変更できます。
+- **タイムライン表示**: 今日のタイムライン上に1カラムでタスクを表示します。
+- **現在時刻ライン**: リアルタイムで現在時刻を表示します。
+- **データ自動保存**: データはlocalStorageに自動保存されます（サーバー・ログイン不要）。
+
+---
+
+## セットアップ方法
+
+1. **リポジトリをクローン**
+   ```bash
+   git clone <このリポジトリのURL>
+   cd Nowtask3
+   ```
+2. **依存パッケージをインストール**
+   ```bash
+   npm install
+   ```
+3. **開発サーバーを起動**
+   ```bash
+   npm run dev
+   ```
+4. **ブラウザでアクセス**
+   - 通常は `http://localhost:5173` などにアクセス
+
+---
+
+## 更新履歴
+
+- **v0.9.6 (2024-07-26)**
+  - **不具合修正**:
+    - アプリのバージョンアップ後やブラウザのリロード時に、タスクが消えてしまう重大な不具合を修正しました。
+    - `localStorage`からのデータ読み込み処理を全面的に見直し、古い形式のデータや不正なデータがあっても安全にタスクを読み込めるように堅牢性を向上させました。
+- **v0.9.5 (2024-07-26)**
+  - **不具合修正**:
+    - タスクの編集中にフォームの一部（「終了」の日時入力欄など）がカードの表示範囲外に隠れてしまうレイアウトの問題を修正しました。
+    - 編集中はカードの高さが内容に合わせて自動調整されるようになり、フォーム全体が常に表示されるようになりました。
+- **v0.9.4 (2024-07-26)**
+  - **機能改善**:
+    - タスクを編集中、対象のカードが最前面に表示されるように`z-index`を調整し、他のタスクと重なっても操作しやすくしました。
+- **v0.9.4 (2025-07-10)**
+- **不具合修正**: タスクカード内で日時を編集している際に、入力内容が意図せずリセットされてしまう問題を修正しました。
+
+### v0.9.3 (2025-07-10)
+- **機能**: バージョン番号の横にコピーボタンを追加し、ワンクリックでバージョン情報をクリップボードにコピーできるようにしました。
+
+### v0.9.2 (2025-07-10)
+- **UI改善**: バージョン番号の表示を、フッターからヘッダーのアプリケーションタイトル横に移動しました。
+
+### v0.9.1 (2025-07-10)
+- **不具合修正**:
+  - 日付を跨ぐタスクを編集した際に、表示が消えてしまう問題を修正しました。
+  - タスクの表示位置計算ロジックを改善し、安定性を向上させました。
+- **機能復活**:
+  - タイムラインクリックによるタスクのクイック追加機能を再度有効化しました。
+
+### v0.9.0 (2025-07-10)
+- **機能**: 日付を跨ぐタスクの追加・編集・表示に対応しました。
+- **改善**: 新規追加・編集フォームを`<input type="datetime-local">`に統一し、操作性を向上させました。
+- **変更**: 仕様の複雑化に伴い、タイムラインクリックによるタスク追加機能を一時的に無効化しました。
+
+### v0.8.0
+- **機能**: 日付選択機能を追加し、過去や未来のタスクを管理できるようになりました。
+- **機能**: ドラッグ＆ドロップによるタスクの時間移動、リサイズによる所要時間の変更に対応しました。
+- **機能**: タスクカード内でのインライン編集機能を追加しました。
+- **改善**: フォームとタイムラインを一体化し、クリック数を削減するUI改善を行いました。
+- **内部**: バージョン表示機能を追加しました (`package.json`と連携)。
+
+---
+
+## ディレクトリ構成
+
+```
+Nowtask3/
+├─ src/
+│  ├─ App.tsx              # アプリ本体
+│  ├─ components/
+│  │    ├─ TaskForm.tsx    # タスク追加・編集フォーム
+│  │    ├─ TaskItem.tsx    # タスク1件の表示・編集
+│  │    └─ Timeline.tsx    # タイムライン表示
+│  ├─ types/
+│  │    └─ Task.ts         # タスク型定義
+│  ├─ utils/
+│  │    └─ storage.ts      # localStorage操作
+│  └─ index.tsx            # エントリポイント
+├─ index.html
+├─ package.json
+├─ tsconfig.json
+└─ README.md
+```
+
+---
+
+## ライセンス
+MIT License
+
+---
+
+## 開発者
+- TOMIさん
+- もぎゅちさん
+
+---
+
+ご意見・ご要望はIssueまたはPull Requestでお知らせください。 
+
+//
+// vite.config.ts
+//
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+process.env.VITE_APP_VERSION = process.env.npm_package_version
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(process.env.VITE_APP_VERSION)
+  }
+}) 
+
+//
+// src/App.tsx
+//
+import React, { useEffect, useState } from 'react';
+import { version } from '../package.json'; // バージョン情報をインポート
+import { Task } from './types/Task';
+import { loadTasks, saveTasks } from './utils/storage';
+import { TaskForm } from './components/TaskForm';
+import { Timeline } from './components/Timeline';
+
+// yyyy-mm-dd形式の文字列を返すヘルパー
+const toDateInputString = (date: Date) => {
+  return date.toISOString().slice(0, 10);
+};
+
+function generateId() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+export const App: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [editingTask, setEditingTask] = useState<Task | null>(null); // インライン編集中のタスクを管理
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [addCounter, setAddCounter] = useState(0);
+  const [copyStatus, setCopyStatus] = useState('Copy');
+
+  useEffect(() => {
+    setTasks(loadTasks());
+  }, []);
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
+  // 上部フォームからのタスク追加
+  const handleFormSubmit = (taskData: { name: string; start: string; end: string }) => {
+    const newTask: Task = {
+      id: generateId(),
+      name: taskData.name,
+      startTime: new Date(taskData.start),
+      endTime: new Date(taskData.end),
+    };
+    setTasks(prev => [...prev, newTask]);
+    setAddCounter(c => c + 1);
+  };
+
+  const startEdit = (task: Task) => {
+    setEditingTask(task);
+  };
+
+  const endEdit = () => {
+    setEditingTask(null);
+  }
+
+  const handleDelete = (id: string) => {
+    if (editingTask?.id === id) {
+      setEditingTask(null);
+    }
+    setTasks(prev => prev.filter(t => t.id !== id));
+  };
+
+  // ドラッグやインライン編集による更新
+  const handleTaskUpdate = (updatedTask: Task) => {
+    setTasks(prev => prev.map(t => (t.id === updatedTask.id ? updatedTask : t)));
+  };
+
+  const handleTimelineClick = (startTime: string, endTime: string) => {
+    const dateStr = toDateInputString(currentDate);
+    const newTask: Task = {
+      id: generateId(),
+      name: '新規タスク',
+      startTime: new Date(`${dateStr}T${startTime}`),
+      endTime: new Date(`${dateStr}T${endTime}`),
+    };
+    setTasks(prev => [...prev, newTask]);
+    setEditingTask(newTask);
+  };
+
+  const handleCopyVersion = () => {
+    const versionString = `v${version}`;
+    navigator.clipboard.writeText(versionString).then(() => {
+      setCopyStatus('Copied!');
+      setTimeout(() => setCopyStatus('Copy'), 1500);
+    });
+  };
+
+  return (
+    <div style={{ maxWidth: 600, margin: '20px auto', padding: 16 }}>
+      <header style={{ marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+            NowTask
+            <span style={{ fontSize: 14, color: '#888' }}>
+              v{version}
+              <button onClick={handleCopyVersion} style={{ marginLeft: 4, padding: '2px 4px', fontSize: 10 }}>
+                {copyStatus}
+              </button>
+            </span>
+          </h1>
+          <input
+            type="date"
+            value={toDateInputString(currentDate)}
+            onChange={e => setCurrentDate(new Date(e.target.value))}
+            style={{ padding: 8 }}
+          />
+        </div>
+        <TaskForm
+          key={`new-${addCounter}`}
+          onSubmit={handleFormSubmit}
+        />
+      </header>
+
+      <main>
+        <Timeline
+          tasks={tasks}
+          currentDate={currentDate}
+          editingTaskId={editingTask?.id || null}
+          onEdit={startEdit}
+          onEndEdit={endEdit}
+          onDelete={handleDelete}
+          onTaskUpdate={handleTaskUpdate}
+          onTimelineClick={handleTimelineClick}
+        />
+      </main>
+
+      <footer style={{ marginTop: 32, fontSize: 12, color: '#888', textAlign: 'center' }}>
+        <p>今日一日を、直感的に。</p>
+      </footer>
+    </div>
+  );
+}; 
+
+//
+// src/index.tsx
+//
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { App } from './App';
+ 
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+); 
+
+//
+// src/vite-env.d.ts
+//
+/// <reference types="vite/client" /> 
+
+//
+// src/components/TaskForm.tsx
+//
+import React, { useState } from 'react';
+
+interface TaskFormProps {
+  onSubmit: (data: { name: string; start: string; end: string }) => void;
+}
+
+const toDateTimeLocalString = (date: Date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  const localDate = new Date(date.getTime() - offset);
+  return localDate.toISOString().slice(0, 16);
+};
+
+export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [start, setStart] = useState(toDateTimeLocalString(new Date()));
+  const [end, setEnd] = useState(toDateTimeLocalString(new Date(Date.now() + 60 * 60 * 1000)));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !start || !end || start >= end) {
+      alert('入力内容が正しくありません。');
+      return;
+    }
+    onSubmit({ name, start, end });
+    // リセット
+    setName('');
+    setStart(toDateTimeLocalString(new Date()));
+    setEnd(toDateTimeLocalString(new Date(Date.now() + 60 * 60 * 1000)));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <input
+        type="text"
+        placeholder="新しいタスクを追加"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        required
+        style={{ padding: 8, fontSize: 16 }}
+      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <input type="datetime-local" value={start} onChange={e => setStart(e.target.value)} required />
+        <span>〜</span>
+        <input type="datetime-local" value={end} onChange={e => setEnd(e.target.value)} required />
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button type="submit" style={{ flex: 1, padding: 8 }}>追加</button>
+      </div>
+    </form>
+  );
+}; 
+
+//
+// src/components/TaskItem.tsx
+//
+import React, { useState, useEffect } from 'react';
+import { Task } from '../types/Task';
+
+export type DragAction = 'move' | 'resize-top' | 'resize-bottom';
+
+interface TaskItemProps {
+  task: Task;
+  isEditing: boolean;
+  currentDate: Date;
+  onEdit: (task: Task) => void;
+  onEndEdit: () => void;
+  onDelete: (id: string) => void;
+  onTaskUpdate: (task: Task) => void;
+  onMouseDown: (e: React.MouseEvent<HTMLDivElement>, task: Task, action: DragAction) => void;
+  hourHeight: number;
+  isoToMinutes: (iso: string) => number;
+}
+
+const toDateTimeLocalString = (date: Date) => {
+  const offset = date.getTimezoneOffset() * 60000;
+  const localDate = new Date(date.getTime() - offset);
+  return localDate.toISOString().slice(0, 16);
+};
+
+const formatTime = (date: Date) => date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+export const TaskItem: React.FC<TaskItemProps> = ({ task, isEditing, currentDate, onEdit, onEndEdit, onDelete, onTaskUpdate, onMouseDown, hourHeight }) => {
+  
+  const [editData, setEditData] = useState({ name: '', start: '', end: '' });
+
+  useEffect(() => {
+    // isEditingがtrueになった瞬間にのみ、フォームのデータを初期化する
+    if (isEditing) {
+      setEditData({
+        name: task.name,
+        start: toDateTimeLocalString(task.startTime),
+        end: toDateTimeLocalString(task.endTime),
+      });
+    }
+  }, [isEditing, task]); // taskも依存配列に追加
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editData.name.trim() || !editData.start || !editData.end || editData.start >= editData.end) {
+      alert('入力内容が正しくありません。終了日時は開始日時より後に設定してください。');
+      return;
+    }
+    const updatedTask: Task = {
+      ...task,
+      name: editData.name.trim(),
+      startTime: new Date(editData.start),
+      endTime: new Date(editData.end),
+    };
+    onTaskUpdate(updatedTask);
+    onEndEdit();
+  };
+
+  const dayStart = new Date(currentDate);
+  dayStart.setHours(0, 0, 0, 0);
+
+  const startMillis = task.startTime.getTime();
+  const endMillis = task.endTime.getTime();
+  const dayStartMillis = dayStart.getTime();
+
+  const startMinutes = (startMillis - dayStartMillis) / 60000;
+  const endMinutes = (endMillis - dayStartMillis) / 60000;
+
+  const displayStartMinutes = Math.max(0, startMinutes);
+  const displayEndMinutes = Math.min(24 * 60, endMinutes);
+
+  if (displayStartMinutes >= displayEndMinutes) {
+    return null; // この日には表示されないタスク
+  }
+
+  const top = (displayStartMinutes / (24 * 60)) * (hourHeight * 24);
+  const height = ((displayEndMinutes - displayStartMinutes) / (24 * 60)) * (hourHeight * 24);
+
+  return (
+    <div
+      onMouseDown={(e) => !isEditing && onMouseDown(e, task, 'move')}
+      style={{
+        position: 'absolute', top, left: 5, right: 5,
+        height: isEditing ? 'auto' : height,
+        minHeight: 40, // 最小高さを設定
+        background: isEditing ? '#fff' : 'rgba(180, 210, 255, 0.8)',
+        border: isEditing ? '2px solid #36f' : '1px solid #6a92d4',
+        borderRadius: 4, padding: '4px 6px', overflow: 'hidden',
+        display: 'flex', flexDirection: 'column',
+        fontSize: 12, userSelect: 'none',
+        zIndex: isEditing ? 30 : 20,
+        cursor: isEditing ? 'default' : 'move',
+        boxShadow: isEditing ? '0 0 8px rgba(0,0,0,0.5)' : 'none',
+      }}
+    >
+      {isEditing ? (
+        // --- 編集モード ---
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <input
+            type="text"
+            value={editData.name}
+            onChange={e => setEditData(prev => ({ ...prev, name: e.target.value }))}
+            style={{ fontWeight: 'bold', width: '100%' }}
+            autoFocus
+          />
+          <label style={{ fontSize: 10, color: '#666' }}>開始</label>
+          <input
+            type="datetime-local"
+            value={editData.start}
+            onChange={e => setEditData(prev => ({ ...prev, start: e.target.value }))}
+          />
+          <label style={{ fontSize: 10, color: '#666' }}>終了</label>
+          <input
+            type="datetime-local"
+            value={editData.end}
+            onChange={e => setEditData(prev => ({ ...prev, end: e.target.value }))}
+          />
+          <div style={{ display: 'flex', gap: 4, marginTop: 'auto' }}>
+            <button type="submit" style={{ flex: 1 }}>保存</button>
+            <button type="button" onClick={onEndEdit}>キャンセル</button>
+          </div>
+        </form>
+      ) : (
+        // --- 表示モード ---
+        <>
+          <div onMouseDown={(e) => { e.stopPropagation(); onMouseDown(e, task, 'resize-top'); }} style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 5, cursor: 'n-resize', zIndex: 21 }} />
+          
+          <div style={{ fontWeight: 'bold', pointerEvents: 'none' }}>{task.name}</div>
+          <div style={{ color: '#333', pointerEvents: 'none' }}>
+            {formatTime(task.startTime)} - {formatTime(task.endTime)}
+          </div>
+
+          <div style={{ position: 'absolute', bottom: 2, right: 2, display: 'flex', gap: 4, zIndex: 22 }}>
+            <button onMouseDown={e => e.stopPropagation()} onClick={() => onEdit(task)} style={{ fontSize: 10, padding: 2 }}>編集</button>
+            <button onMouseDown={e => e.stopPropagation()} onClick={() => onDelete(task.id)} style={{ fontSize: 10, padding: 2, color: 'red' }}>削除</button>
+          </div>
+
+          <div onMouseDown={(e) => { e.stopPropagation(); onMouseDown(e, task, 'resize-bottom'); }} style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 5, cursor: 's-resize', zIndex: 21 }} />
+        </>
+      )}
+    </div>
+  );
+}; 
+
+//
+// src/components/Timeline.tsx
+//
+import React, { useEffect, useRef, useState } from 'react';
+import { Task } from '../types/Task';
+import { TaskItem, DragAction } from './TaskItem';
+
+interface TimelineProps {
+  tasks: Task[];
+  currentDate: Date;
+  editingTaskId: string | null;
+  onEdit: (task: Task) => void;
+  onEndEdit: () => void;
+  onDelete: (id: string) => void;
+  onTaskUpdate: (task: Task) => void;
+  onTimelineClick: (startTime: string, endTime: string) => void;
+}
+
+const HOUR_HEIGHT = 60;
+const MINUTE_INTERVAL = 15; // 15分単位でスナップ
+
+const timeToMinutes = (time: string) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+const isoToMinutes = (isoString: string) => {
+  const d = new Date(isoString);
+  return d.getHours() * 60 + d.getMinutes();
+};
+
+const minutesToTime = (minutes: number) => {
+  const h = Math.floor(minutes / 60).toString().padStart(2, '0');
+  const m = (minutes % 60).toString().padStart(2, '0');
+  return `${h}:${m}`;
+};
+
+export const Timeline: React.FC<TimelineProps> = ({ tasks, currentDate, editingTaskId, onEdit, onEndEdit, onDelete, onTaskUpdate, onTimelineClick }) => {
+  const [now, setNow] = useState(new Date());
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<{ task: Task; action: DragAction; startY: number, originalStart: number, originalEnd: number } | null>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000 * 30);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, task: Task, action: DragAction) => {
+    e.preventDefault();
+    setDragging({
+      task,
+      action,
+      startY: e.clientY,
+      originalStart: isoToMinutes(task.startTime.toISOString()),
+      originalEnd: isoToMinutes(task.endTime.toISOString())
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!dragging || !timelineRef.current) return;
+    const { task, action, startY, originalStart, originalEnd } = dragging;
+
+    const timelineRect = timelineRef.current.getBoundingClientRect();
+    const totalMinutes = (e.clientY - timelineRect.top) / (HOUR_HEIGHT * 24) * (24 * 60);
+    const snapMinutes = Math.round(totalMinutes / MINUTE_INTERVAL) * MINUTE_INTERVAL;
+
+    let newStart = originalStart;
+    let newEnd = originalEnd;
+
+    const diff = (e.clientY - startY) / (HOUR_HEIGHT * 24) * (24 * 60);
+    const snapDiff = Math.round(diff / MINUTE_INTERVAL) * MINUTE_INTERVAL;
+
+    if (action === 'move') {
+      newStart = originalStart + snapDiff;
+      newEnd = originalEnd + snapDiff;
+    } else if (action === 'resize-bottom') {
+      newEnd = originalEnd + snapDiff;
+      // 終了時刻が開始時刻を追い越さないように制御
+      if (newEnd < newStart + MINUTE_INTERVAL) {
+        newEnd = newStart + MINUTE_INTERVAL;
+      }
+    } else if (action === 'resize-top') {
+      newStart = originalStart + snapDiff;
+      // 開始時刻が終了時刻を追い越さないように制御
+      if (newStart > newEnd - MINUTE_INTERVAL) {
+        newStart = newEnd - MINUTE_INTERVAL;
+      }
+    }
+
+    newStart = Math.max(0, Math.min(24 * 60 - MINUTE_INTERVAL, newStart));
+    newEnd = Math.max(MINUTE_INTERVAL, Math.min(24 * 60, newEnd));
+
+    const originalStartDate = new Date(task.startTime);
+    const newStartDate = new Date(originalStartDate);
+    newStartDate.setHours(Math.floor(newStart / 60), newStart % 60);
+
+    const newEndDate = new Date(originalStartDate);
+    newEndDate.setHours(Math.floor(newEnd / 60), newEnd % 60);
+
+    onTaskUpdate({
+      ...task,
+      startTime: newStartDate,
+      endTime: newEndDate,
+    });
+  };
+
+  const handleMouseUp = () => {
+    setDragging(null);
+  };
+
+  const handleTimelineClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target !== timelineRef.current || !timelineRef.current) {
+      return;
+    }
+    const rect = timelineRef.current.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const totalMinutes = (y / (HOUR_HEIGHT * 24)) * (24 * 60);
+    const startMinute = Math.floor(totalMinutes / MINUTE_INTERVAL) * MINUTE_INTERVAL;
+    const endMinute = startMinute + 60;
+
+    if (endMinute > 24 * 60) return;
+
+    onTimelineClick(minutesToTime(startMinute), minutesToTime(endMinute));
+  };
+
+  const selectedDateStart = new Date(currentDate);
+  selectedDateStart.setHours(0, 0, 0, 0);
+  const selectedDateEnd = new Date(currentDate);
+  selectedDateEnd.setHours(23, 59, 59, 999);
+
+  const visibleTasks = tasks.filter(t => {
+    const taskStart = new Date(t.startTime); // 'start' -> 'startTime'
+    const taskEnd = new Date(t.endTime);   // 'end' -> 'endTime'
+    return taskStart < selectedDateEnd && taskEnd > selectedDateStart;
+  });
+
+  const nowMinutes = timeToMinutes(`${now.getHours()}:${now.getMinutes()}`);
+  const nowTop = (nowMinutes / (24 * 60)) * (HOUR_HEIGHT * 24);
+  const isToday = new Date().toISOString().slice(0, 10) === selectedDateStart.toISOString().slice(0, 10);
+
+  return (
+    <div style={{ display: 'flex' }} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+      {/* 時間軸 */}
+      <div style={{ marginRight: 10, paddingTop: 10 }}>
+        {Array.from({ length: 24 }, (_, i) => (
+          <div key={i} style={{ height: HOUR_HEIGHT, textAlign: 'right', color: '#888', fontSize: 12 }}>
+            {i}:00
+          </div>
+        ))}
+      </div>
+
+      {/* タイムライン本体 */}
+      <div
+        ref={timelineRef}
+        onMouseMove={handleMouseMove}
+        onClick={handleTimelineClick}
+        style={{
+          position: 'relative',
+          flex: 1,
+          background: '#f6f6f6',
+          borderRadius: 8,
+          height: HOUR_HEIGHT * 24, // 24時間分の高さ
+        }}
+      >
+        {/* 現在時刻ライン (今日の日付が選択されている場合のみ表示) */}
+        {isToday && <div style={{ position: 'absolute', left: 0, right: 0, top: nowTop, height: 2, background: 'red', zIndex: 10, }} />}
+        {visibleTasks.map(task => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            isEditing={task.id === editingTaskId}
+            currentDate={currentDate}
+            onEdit={onEdit}
+            onEndEdit={onEndEdit}
+            onDelete={onDelete}
+            onTaskUpdate={onTaskUpdate}
+            onMouseDown={handleMouseDown}
+            hourHeight={HOUR_HEIGHT}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}; 
+
+//
+// src/types/Task.ts
+//
+export interface Task {
+  id: string;
+  name: string;
+  startTime: Date;
+  endTime: Date;
+  version?: string; // タスクデータのバージョン
+} 
+
+//
+// src/utils/storage.ts
+//
+import { Task } from '../types/Task';
+
+const APP_VERSION = import.meta.env.VITE_APP_VERSION;
+
+/**
+ * タスクデータをマイグレーションする
+ * 古いデータ構造を新しい構造に変換する
+ */
+const migrateTask = (task: any): Task => {
+  // バージョン1: startTime/endTimeが文字列で保存されている場合
+  if (typeof task.startTime === 'string' || typeof task.endTime === 'string') {
+    return {
+      ...task,
+      startTime: new Date(task.startTime),
+      endTime: new Date(task.endTime),
+      version: APP_VERSION,
+    };
+  }
+
+  // バージョンが古い、または存在しない場合もDateオブジェクトに変換
+  if (!task.version) {
+    return {
+      ...task,
+      startTime: new Date(task.startTime),
+      endTime: new Date(task.endTime),
+      version: APP_VERSION,
+    };
+  }
+  
+  // 最新バージョンの場合はそのまま返す
+  return {
+    ...task,
+    version: APP_VERSION,
+  };
+};
+
+
+export const saveTasks = (tasks: Task[]) => {
+  try {
+    const tasksWithVersion = tasks.map(task => ({ ...task, version: APP_VERSION }));
+    const data = JSON.stringify(tasksWithVersion);
+    localStorage.setItem('tasks', data);
+  } catch (error) {
+    console.error("Could not save tasks to localStorage", error);
+  }
+};
+
+export const loadTasks = (): Task[] => {
+  const data = localStorage.getItem('tasks');
+  if (!data) return [];
+
+  try {
+    const tasks: unknown[] = JSON.parse(data);
+
+    if (!Array.isArray(tasks)) {
+      console.warn('Stored tasks are not in an array format.');
+      return [];
+    }
+    
+    const validTasks = tasks.map((task: any) => {
+      // 古いデータ形式（start/end）を新しい形式（startTime/endTime）に変換
+      if (task.start) task.startTime = task.start;
+      if (task.end) task.endTime = task.end;
+
+      const startTime = new Date(task.startTime);
+      const endTime = new Date(task.endTime);
+
+      // データ構造と日時の有効性を厳密にチェック
+      if (
+        task.id && typeof task.id === 'string' &&
+        task.name && typeof task.name === 'string' &&
+        startTime && !isNaN(startTime.getTime()) &&
+        endTime && !isNaN(endTime.getTime()) &&
+        startTime < endTime
+      ) {
+        return {
+          id: task.id,
+          name: task.name,
+          startTime,
+          endTime,
+          version: APP_VERSION, // 読み込み時に最新バージョンを付与
+        } as Task;
+      }
+      return null; // 無効なデータはnullとしてマーク
+    });
+
+    // nullを取り除き、有効なタスクのみを返す
+    return validTasks.filter((task): task is Task => task !== null);
+
+  } catch (error) {
+    console.error("Failed to load or parse tasks from localStorage. Clearing corrupted data.", error);
+    localStorage.removeItem('tasks'); // 破損したデータを削除
+    return [];
+  }
+}; 

@@ -1,0 +1,113 @@
+/* レスポンシブレイアウト用のCSS */
+
+/* デスクトップ向けデフォルトスタイル */
+.app-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.app-header {
+  max-width: 1200px;
+  margin: 0 auto 24px auto;
+  background-color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  min-height: calc(100vh - 200px);
+}
+
+.app-sidebar {
+  /* サイドバーのスタイルはTaskListコンポーネント内で定義 */
+}
+
+.app-timeline {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-footer {
+  max-width: 1200px;
+  margin: 32px auto 0 auto;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+}
+
+/* タブレット向けスタイル (768px以下) */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 10px;
+  }
+
+  .app-header {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+  }
+
+  .app-main {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    min-height: auto;
+  }
+
+  .app-sidebar {
+    order: 2; /* タイムラインを上に、タスク一覧を下に */
+    max-height: 400px; /* タスク一覧の高さを制限 */
+  }
+
+  .app-timeline {
+    order: 1;
+    padding: 16px;
+  }
+}
+
+/* スマートフォン向けスタイル (480px以下) */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 8px;
+  }
+
+  .app-header {
+    padding: 12px;
+  }
+
+  .app-main {
+    gap: 12px;
+  }
+
+  .app-timeline {
+    padding: 12px;
+  }
+
+  .app-sidebar {
+    max-height: 300px;
+  }
+}
+
+/* ダークモード対応（将来の拡張用） */
+@media (prefers-color-scheme: dark) {
+  .app-container {
+    background-color: #1a1a1a;
+  }
+
+  .app-header,
+  .app-timeline {
+    background-color: #2d2d2d;
+    color: #ffffff;
+  }
+
+  .app-footer {
+    color: #cccccc;
+  }
+} 
